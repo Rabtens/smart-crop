@@ -48,22 +48,15 @@ const CONFIG = {
   API_PORT:     3002,
 };
 
-// Pick the right backend URL per platform / environment:
-//   - Production web (Render):  https://<EXPO_PUBLIC_API_HOST>/api/analyze
-//   - Local web preview:        http://localhost:3002/api/analyze
-//   - Real phone via Expo Go:   http://<your-LAN-IP>:3002/api/analyze
-//   - Android emulator:         set API_HOST_LAN to '10.0.2.2' above
-//
-// Set EXPO_PUBLIC_API_HOST (hostname only, no scheme, no port) in Render's
-// Static Site env vars at build time, e.g. "smart-crop-api.onrender.com".
-const isWeb      = Platform.OS === 'web';
-const isProdWeb  = isWeb && Boolean(process.env.EXPO_PUBLIC_API_HOST);
-const apiHost    = isWeb
-  ? (process.env.EXPO_PUBLIC_API_HOST ?? 'localhost')
-  : CONFIG.API_HOST_LAN;
-const apiScheme  = isProdWeb ? 'https' : 'http';
-const apiPort    = isProdWeb ? ''      : `:${CONFIG.API_PORT}`;
-const PROXY_URL  = `${apiScheme}://${apiHost}${apiPort}/api/analyze`;
+// Backend URL — hard-coded for simplicity. If the page is hosted anywhere
+// other than localhost (i.e. on Vercel), call the Render backend directly.
+const PROD_API = 'https://smart-crop-api-x50x.onrender.com/api/analyze';
+const isWeb    = Platform.OS === 'web';
+const isProdWeb = isWeb && typeof window !== 'undefined'
+                       && window.location.hostname !== 'localhost';
+const PROXY_URL = isProdWeb
+  ? PROD_API
+  : `http://${isWeb ? 'localhost' : CONFIG.API_HOST_LAN}:${CONFIG.API_PORT}/api/analyze`;
 
 // ============================================================
 // SECTION 2: DUMMY ESP32 SENSOR DATA
