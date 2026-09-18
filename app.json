@@ -24,6 +24,15 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Smart Crop needs your photos so you can send a picture of a sick plant for diagnosis.",
+          "cameraPermission": "Smart Crop needs the camera so you can photograph a sick plant for diagnosis."
+        }
+      ]
+    ]
   }
 }
